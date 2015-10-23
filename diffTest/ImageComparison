@@ -1,0 +1,54 @@
+#!/usr/bin/env python
+import os.path
+from glob import glob
+from hemeTools.image import Image
+
+def ImDirCompare(imdir1, imdir2):
+    ones = glob(os.path.join(imdir1, '*.dat'))
+    onetails = [os.path.split(one)[1] for one in ones]
+    
+    twos = glob(os.path.join(imdir2, '*.dat'))
+    
+    for i, fullpath in enumerate(twos):
+        tail = os.path.split(fullpath)[1]
+        try:
+            j = onetails.index(tail)
+        except ValueError:
+            print 'No matching image for "%s"' % fullpath
+            continue
+        
+        if not ImCompare(ones[j], twos[i]):
+            print 'Images "%s" and "%s" differ' % (ones[j], twos[i])
+            pass
+        continue
+    return
+
+def ImCompare(im1, im2):
+    im1 = Image(im1)
+    im2 = Image(im2)
+    return im1.almost_eq(im2)
+
+if __name__ == '__main__':
+    try:
+        import argparse
+        from os.path import basename, exists
+
+        parser = argparse.ArgumentParser()
+        parser.add_argument('input1', help='One input image')
+        parser.add_argument('input2', help="A second image to compare with")
+        args = parser.parse_args()
+        if not exists(args.input1):
+            print "Input file 1 must exist"
+            parser.print_help()
+            raise SystemExit
+
+        if not exists(args.input2):
+            print "Input file 2 must exist"
+            parser.print_help()
+            raise SystemExit
+
+        ImDirCompare(args.input1, args.input2)
+    except ImportError:
+        import sys
+	ImDirCompare(sys.argv[1], sys.argv[2])
+

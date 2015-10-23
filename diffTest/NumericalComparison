@@ -1,0 +1,121 @@
+#!/usr/bin/env python
+import numpy as N
+import os
+from hemeTools.parsers.extraction import ExtractedProperty
+
+def masky(array):
+    return N.ma.masked_invalid(array, copy=False)
+
+def ExtractedCompare(dir1, dir2):
+    """Simple function to compare two HemeLB extracted property folders.
+    """
+
+    extraction1 = os.listdir(dir1)
+    extraction2 = os.listdir(dir2)
+
+    assert extraction1 == extraction2, "Different extracted property files found"
+
+    for filename in extraction1:
+        CompareExtractedPropertyFiles(os.path.join(dir1, filename), os.path.join(dir2, filename))
+
+class Orderer(object):
+    def __init__(self, snap):
+        self.nx, self.ny, self.nz = snap.grid.max(axis=0)
+        oneD = self.ThreeToOne(snap.grid)
+        self.ordering = oneD.argsort()
+        return
+    
+    def ThreeToOne(self, grid):
+        return (grid[...,0] * self.ny + grid[..., 1]) * self.nz + grid[..., 2]
+    
+    def __call__(self, snap):
+        return snap[self.ordering]
+    
+    pass
+
+# This deliberately doesn't compare version numbers, so long as the parser can cope with the newer version
+def CompareExtractedPropertyFiles(file1, file2):
+    ep1 = ExtractedProperty(file1)
+    ep2 = ExtractedProperty(file2)
+
+    # Some basic file-level assertions
+    assert ep1.voxelSizeMetres == ep2.voxelSizeMetres, "Different voxel sizes in extracted files %s and %s" % (file1, file2)
+    assert N.array_equal(ep1.originMetres, ep2.originMetres), "Different origin positions in extracted files %s and %s" % (file1, file2)
+    assert ep1.siteCount == ep2.siteCount, "Different site count in extracted files %s and %s" % (file1, file2)
+    assert ep1.fieldCount == ep2.fieldCount, "Different field count in extracted files %s and %s" % (file1, file2)
+
+    # Check that the times of extraction are the same
+    assert N.array_equal(ep1.times, ep2.times), "Different extraction times in extracted files %s and %s" % (file1, file2)
+
+    # Now check the field specs are identical
+    fields1 = ep1.GetFieldSpec()
+    fields2 = ep2.GetFieldSpec()
+   
+    assert sum(1 for _ in fields1) == sum(1 for _ in fields2), "Different numbers of fields in extracted files %s and %s" % (file1, file2)
+    
+    for (field1, field2) in zip(fields1, fields2):
+        assert field1 == field2, "Different field in extracted files %s and %s" % (file1, file2)
+
+    orderer1 = None
+    orderer2 = None
+
+    # Now compare each data point
+    for time in ep1.times:
+        if orderer1 is None:
+            snap1 = ep1.GetByTimeStep(time)
+            orderer1 = Orderer(snap1)
+        if orderer2 is None:
+            snap2 = ep2.GetByTimeStep(time)
+            orderer2 = Orderer(snap2)
+        
+        snap1 = orderer1(ep1.GetByTimeStep(time))
+        snap2 = orderer2(ep2.GetByTimeStep(time))
+        
+        assert len(snap1) == len(snap2), "Different extraction lengths at time %i in files %s and %s" % (time, file1, file2)
+
+        for field in snap1.dtype.names:
+            if field == "id":
+                continue
+
+            if field == "pressure":
+                # #614: the dataset we compare against was generated with all the pressures shifted up by 80. The tolerance needs to be
+                # made substantially smaller because those results were stored in single precision and a limited number of decimal
+                # places is available
+                snap1[field] -= 80
+                errorTreshold = 1e-5
+            else:
+                errorTreshold = 1e-12
+                
+	    N.seterr(invalid='ignore')
+            assert N.all(N.logical_or( (N.logical_and((snap1[field] == N.inf), (snap2[field] == N.inf))),((abs(snap1[field] - snap2[field])) < errorTreshold))), "Field %s differed [max difference %s] at time %i in files %s and %s" % (field, N.max(abs(snap1[field]- snap2[field])), time, file1, file2)
+
+    print 'Everything OK in extracted property files'
+
+if __name__ == '__main__':
+    import sys
+    try:
+        try:
+            import argparse
+            from os.path import basename, exists
+
+            parser = argparse.ArgumentParser()
+            parser.add_argument('input1', help='One extracted properties directory')
+            parser.add_argument('input2', help="A second extracted properties directory to compare with")
+            args = parser.parse_args()
+            if not exists(args.input1):
+                print "Input directory 1 must exist"
+                parser.print_help()
+                raise SystemExit
+
+            if not exists(args.input2):
+                print "Input directory 2 must exist"
+                parser.print_help()
+                raise SystemExit
+
+            ExtractedCompare(args.input1, args.input2)
+        except ImportError:
+            ExtractedCompare(sys.argv[1], sys.argv[2])
+    except AssertionError, e:
+        print str(e)
+        sys.exit(1)
+    sys.exit(0)
