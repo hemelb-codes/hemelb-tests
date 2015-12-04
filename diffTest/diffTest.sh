@@ -8,9 +8,6 @@ rm -r results
 # Run the test
 ./run.sh ${HEMELB_INSTALL_DIR:=/usr/local/bin/}
 
-# Get a summary of whether the image files have been modified
-./ImageComparison CleanImages results/Images
-
 # Use the script to examine any differences between the snapshot files
 ./NumericalComparison CleanExtracted results/Extracted
 
