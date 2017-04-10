@@ -86,7 +86,7 @@ def CompareExtractedPropertyFiles(file1, file2):
             else:
                 errorTreshold = 1e-12
                 
-	    N.seterr(invalid='ignore')
+            N.seterr(invalid='ignore')
             assert N.all(N.logical_or( (N.logical_and((snap1[field] == N.inf), (snap2[field] == N.inf))),((abs(snap1[field] - snap2[field])) < errorTreshold))), "Field %s differed [max difference %s] at time %i in files %s and %s" % (field, N.max(abs(snap1[field]- snap2[field])), time, file1, file2)
 
     print 'Everything OK in extracted property files'
