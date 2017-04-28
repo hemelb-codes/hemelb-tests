@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 import numpy as N
 import os
+from __future__ import print_function
+
 from hemeTools.parsers.extraction import ExtractedProperty
 
 def masky(array):
@@ -89,7 +91,7 @@ def CompareExtractedPropertyFiles(file1, file2):
             N.seterr(invalid='ignore')
             assert N.all(N.logical_or( (N.logical_and((snap1[field] == N.inf), (snap2[field] == N.inf))),((abs(snap1[field] - snap2[field])) < errorTreshold))), "Field %s differed [max difference %s] at time %i in files %s and %s" % (field, N.max(abs(snap1[field]- snap2[field])), time, file1, file2)
 
-    print 'Everything OK in extracted property files'
+    print('Everything OK in extracted property files')
 
 if __name__ == '__main__':
     import sys
@@ -103,12 +105,12 @@ if __name__ == '__main__':
             parser.add_argument('input2', help="A second extracted properties directory to compare with")
             args = parser.parse_args()
             if not exists(args.input1):
-                print "Input directory 1 must exist"
+                print("Input directory 1 must exist")
                 parser.print_help()
                 raise SystemExit
 
             if not exists(args.input2):
-                print "Input directory 2 must exist"
+                print("Input directory 2 must exist")
                 parser.print_help()
                 raise SystemExit
 
@@ -116,6 +118,6 @@ if __name__ == '__main__':
         except ImportError:
             ExtractedCompare(sys.argv[1], sys.argv[2])
     except AssertionError, e:
-        print str(e)
+        print(str(e))
         sys.exit(1)
     sys.exit(0)
