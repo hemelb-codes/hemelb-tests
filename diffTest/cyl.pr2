@@ -1,0 +1,42 @@
+DurationSeconds: 5.0
+Iolets:
+- Centre:
+    x: 0.0
+    y: 0.0
+    z: -50.0
+  Name: Inlet
+  Normal:
+    x: 0.0
+    y: 0.0
+    z: 1.0
+  Pressure:
+    x: 80.02
+    y: 0.0
+    z: 0.0
+  Radius: 4.0
+  Type: Inlet
+- Centre:
+    x: 0.0
+    y: 0.0
+    z: 50.0
+  Name: Outlet
+  Normal:
+    x: 0.0
+    y: 0.0
+    z: -1.0
+  Pressure:
+    x: 80.0
+    y: 0.0
+    z: 0.0
+  Radius: 4.0
+  Type: Outlet
+OutputGeometryFile: config.gmy
+OutputXmlFile: config.xml
+SeedPoint:
+  x: 0.0
+  y: 3.0
+  z: 0.0
+StlFile: cyl.stl
+StlFileUnitId: 1
+TimeStepSeconds: 0.0001
+VoxelSize: 0.4
