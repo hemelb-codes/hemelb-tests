@@ -1,4 +1,4 @@
-DurationSeconds: 5.0
+DurationSeconds: 0x1.4924924924924p+1
 Iolets:
 - Centre:
     x: 0.0
@@ -10,7 +10,7 @@ Iolets:
     y: 0.0
     z: 1.0
   Pressure:
-    x: 80.02
+    x: 0x1.47ae147ae1000p-6
     y: 0.0
     z: 0.0
   Radius: 4.0
@@ -25,7 +25,7 @@ Iolets:
     y: 0.0
     z: -1.0
   Pressure:
-    x: 80.0
+    x: 0.0
     y: 0.0
     z: 0.0
   Radius: 4.0
@@ -38,5 +38,5 @@ SeedPoint:
   z: 0.0
 StlFile: cyl.stl
 StlFileUnitId: 1
-TimeStepSeconds: 0.0001
+TimeStepSeconds: 0x1.c163c450bfed4p-11
 VoxelSize: 0.4
