@@ -1,58 +1,53 @@
-<?xml version="1.0" ?>
+<?xml version='1.0' encoding='US-ASCII'?>
 <hemelbsettings version="3">
   <simulation>
-    <steps value="3000" units="lattice" />
-    <step_length value="0.0008571428571428571" units="s" />
+    <step_length units="s" value="0.0008571428571428571" />
+    <steps units="lattice" value="3000" />
     <stresstype value="1" />
-    <voxel_size value="4.0e-4" units="m" />
-    <origin value="(-3.2e-3,-3.2e-3,-5.02e-2)" units="m" />
+    <voxel_size units="m" value="0.0004" />
+    <origin units="m" value="(-0.0032,-0.0032,-0.0502)" />
   </simulation>
   <geometry>
     <datafile path="config.gmy" />
   </geometry>
-  <initialconditions>
-    <pressure>
-      <uniform value="0.0" units="mmHg"/>
-    </pressure>
-  </initialconditions>  
   <inlets>
     <inlet>
-      <condition type="pressure" subtype="cosine">
-        <amplitude value="0.0" units="mmHg" />
-        <mean value="0.02" units="mmHg" />
-        <phase value="0.0" units="rad" />
-        <period value="0.8571428571428571" units="s" />
+      <condition subtype="cosine" type="pressure">
+        <mean units="mmHg" value="0.01999999999999602" />
+        <amplitude units="mmHg" value="0.0" />
+        <phase units="rad" value="0.0" />
+        <period units="s" value="0.8571428571428571" />
       </condition>
-      <normal value="(0.0,0.0,1.0)" units="dimensionless" />
-      <position value="(0.0,0.0,-0.05)" units="m" />
+      <normal units="dimensionless" value="(0.0,0.0,1.0)" />
+      <position units="m" value="(0.0,0.0,-0.05)" />
     </inlet>
   </inlets>
   <outlets>
     <outlet>
-      <condition type="pressure" subtype="cosine">
-        <amplitude value="0.0" units="mmHg" />
-        <mean value="0.0" units="mmHg" />
-        <phase value="0.0" units="rad" />
-        <period value="0.8571428571428571" units="s" />
+      <condition subtype="cosine" type="pressure">
+        <mean units="mmHg" value="0.0" />
+        <amplitude units="mmHg" value="0.0" />
+        <phase units="rad" value="0.0" />
+        <period units="s" value="0.8571428571428571" />
       </condition>
-      <normal value="(0.0,0.0,-1.0)" units="dimensionless" />
-      <position value="(0.0,0.0,0.05)" units="m" />
+      <normal units="dimensionless" value="(0.0,0.0,-1.0)" />
+      <position units="m" value="(0.0,0.0,0.05)" />
     </outlet>
   </outlets>
   <visualisation>
-    <centre value="(0.0,0.0,0.0)" units="m" />
+    <centre units="m" value="(0.0,0.0,0.0)" />
     <orientation>
-      <latitude value="45.0" units="deg" />
-      <longitude value="45.0" units="deg" />
+      <longitude units="deg" value="45.0" />
+      <latitude units="deg" value="45.0" />
     </orientation>
     <display brightness="0.03" zoom="1.0" />
     <range>
-      <maxstress value="0.1" units="Pa" />
-      <maxvelocity value="0.1" units="m/s" />
+      <maxvelocity units="m/s" value="0.1" />
+      <maxstress units="Pa" value="0.1" />
     </range>
   </visualisation>
   <properties>
-    <propertyoutput file="flow_snapshot.dat" period="1000">
+    <propertyoutput file="flow_snapshot.xtr" period="1000">
       <geometry type="whole" />
       <field type="pressure" />
       <field type="velocity" name="developed_velocity_field" />
@@ -65,4 +60,9 @@
     </steady_flow_convergence>
     <incompressibility/>
   </monitoring>
+  <initialconditions>
+    <pressure>
+      <uniform units="mmHg" value="0.0" />
+    </pressure>
+  </initialconditions>
 </hemelbsettings>
