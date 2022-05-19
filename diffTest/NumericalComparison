@@ -148,7 +148,12 @@ def CompareOffsetFiles(file1, file2):
     off1 = OffsetFile(file1)
     off2 = OffsetFile(file2)
     assert off1.NumberOfRanks == off2.NumberOfRanks
-    assert np.all(off1.Data == off2.Data)
+    # Since "golden" data is in a snapshot v4 and we're now in v5,
+    # which has a different header size, the offsets will be shifted
+    # by a constant.
+    rel_off1 = off1.Data - off1.Data[0]
+    rel_off2 = off2.Data - off2.Data[0]
+    assert np.all(rel_off1 == rel_off2)
 
 
 if __name__ == "__main__":
