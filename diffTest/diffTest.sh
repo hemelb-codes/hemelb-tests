@@ -1,12 +1,12 @@
 #!/bin/bash
 
-NPROCS=2
+set -e
 
-# Remove the results folder so that we have somewhere for the test output to go
-rm -r results
+# Remove any results folder so that we have somewhere for the test output to go
+rm -rf results
 
-# Run the test
-./run.sh ${HEMELB_INSTALL_DIR:=/usr/local/bin/}
+# Run the test (hemelb needs to be in your PATH)
+mpirun -np 3 hemelb -in config.xml -i 1 -ss 1111
 
 # Use the script to examine any differences between the snapshot files
 ./NumericalComparison CleanExtracted results/Extracted
