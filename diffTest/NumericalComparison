@@ -43,7 +43,7 @@ def dir_to_xtroff(dirpath: Path):
     ]
 
 
-def ExtractedCompare(dir1: Path, dir2: Path):
+def ExtractedCompare(dir1: Path, dir2: Path, light_offsets: bool):
     """Simple function to compare two HemeLB extracted property folders."""
     extraction1 = dir_to_xtroff(dir1)
     extraction2 = dir_to_xtroff(dir2)
@@ -52,7 +52,7 @@ def ExtractedCompare(dir1: Path, dir2: Path):
 
     for xtr, off in extraction1:
         CompareExtractedPropertyFiles(dir1 / xtr, dir2 / xtr)
-        CompareOffsetFiles(dir1 / off, dir2 / off)
+        CompareOffsetFiles(dir1 / off, dir2 / off, light_offsets)
 
 
 class Orderer(object):
@@ -134,7 +134,9 @@ def CompareExtractedPropertyFiles(file1, file2):
             errorThreshold = 1e-12
             field1 = np.ma.masked_invalid(snap1[field])
             field2 = np.ma.masked_invalid(snap2[field])
-            assert np.all(field1.mask == field2.mask), f"Field {field} has differing finiteness at time {time} in files {file1} and {file2}"
+            assert np.all(
+                field1.mask == field2.mask
+            ), f"Field {field} has differing finiteness at time {time} in files {file1} and {file2}"
             delta = np.abs(field1 - field2)
 
             assert np.all(
@@ -144,24 +146,41 @@ def CompareExtractedPropertyFiles(file1, file2):
     print("Everything OK in extracted property files")
 
 
-def CompareOffsetFiles(file1, file2):
+def CompareOffsetFiles(file1, file2, light_checks):
+    full_check = not light_checks
+
     off1 = OffsetFile(file1)
     off2 = OffsetFile(file2)
-    assert off1.NumberOfRanks == off2.NumberOfRanks
+
+    if full_check:
+        assert off1.NumberOfRanks == off2.NumberOfRanks
+
     # Since "golden" data is in a snapshot v4 and we're now in v5,
     # which has a different header size, the offsets will be shifted
     # by a constant.
     rel_off1 = off1.Data - off1.Data[0]
     rel_off2 = off2.Data - off2.Data[0]
-    assert np.all(rel_off1 == rel_off2)
+
+    # The last one always has to be the same
+    assert rel_off1[-1] == rel_off2[-1]
+
+    if full_check:
+        assert np.all(rel_off1 == rel_off2)
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("input1", help="One extracted properties directory")
+
     parser.add_argument(
-        "input2", help="A second extracted properties directory to compare with"
+        "--light-offset-checks",
+        action="store_true",
+        help="don't fully check the offsets (e.g. if run with a different domain decomposition)",
     )
+    parser.add_argument("input1", help="first extracted properties directory")
+    parser.add_argument(
+        "input2", help="second extracted properties directory to compare with"
+    )
+
     args = parser.parse_args()
 
     d1 = Path(args.input1)
@@ -176,4 +195,4 @@ if __name__ == "__main__":
         parser.print_help()
         raise SystemExit(1)
 
-    ExtractedCompare(d1, d2)
+    ExtractedCompare(d1, d2, args.light_offset_checks)

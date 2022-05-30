@@ -1,11 +1,17 @@
 #!/bin/bash
 
-set -e
+set -ex
+
+GOLD_NUMPROCS=3
+GOLD_STEERING=basic
 
 MPIRUN=${MPIRUN:-mpirun}
 MPIRUN_FLAGS=${MPIRUN_FLAGS:-}
 MPIRUN_NUMPROCS_FLAG=${MPIRUN_NUMPROCS_FLAG:--np}
-NUMPROCS=${NUMPROCS:-3}
+NUMPROCS=${NUMPROCS:-${GOLD_NUMPROCS}}
+
+# Which steering library was compiled into the test executable?
+HEMELB_STEERING_LIB=${HEMELB_STEERING_LIB:-${GOLD_STEERING}}
 
 # Remove any results folder so that we have somewhere for the test output to go
 rm -rf results
@@ -13,10 +19,14 @@ rm -rf results
 # Run the test (hemelb needs to be in your PATH)
 $MPIRUN $MPIRUN_FLAGS $MPIRUN_NUMPROCS_FLAG $NUMPROCS hemelb -in config.xml -i 1 -ss 1111
 
-# Use the script to examine any differences between the snapshot files
-./NumericalComparison CleanExtracted results/Extracted
+OFFSET_CHECK=${OFFSET_CHECK:-full}
+if [[ ${OFFSET_CHECK} == light ]]; then
+    flag="--light-offset-checks"
+else
+    flag=""
+fi
 
-# Check the difference between colloid outputs
-# diff ColloidOutput.xdr results/ColloidOutput.xdr
+# Use the script to examine any differences between the snapshot files
+./NumericalComparison $flag CleanExtracted results/Extracted
 
 exit $?
