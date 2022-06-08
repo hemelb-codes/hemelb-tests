@@ -13,3 +13,4 @@ for name in whole first_half second_half; do
     $MPIRUN $MPIRUN_FLAGS $MPIRUN_NUMPROCS_FLAG $NUMPROCS hemelb -in $name.xml -out $name -i 1 -ss 1111
 done
 
+python compare.py

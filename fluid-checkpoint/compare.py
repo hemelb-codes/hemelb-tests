@@ -6,27 +6,28 @@ from hlb.parsers.extraction import ExtractedProperty
 
 test_dir = Path("")
 
-def get_cp(run_name):
-    return ExtractedProperty(test_dir / run_name / "Extracted/checkpoint.xtr")
+def get_cp(run_name, time):
+    xp = ExtractedProperty(test_dir / run_name / f"Extracted/checkpoint{time}.xtr")
+    assert len(xp.times) == 1
+    assert xp.times[0] == time
+    return xp
 
-whole = get_cp("whole")
-first = get_cp("first_half")
-second = get_cp("second_half")
+whole1 = get_cp("whole", 100)
+whole2 = get_cp("whole", 200)
+first1 = get_cp("first_half", 100)
+second1 = get_cp("second_half", 100)
+second2 = get_cp("second_half", 200)
 
-assert first.times[0] == whole.times[0]
-assert second.times[0] == whole.times[0]
-assert second.times[1] == whole.times[1]
-
-w1 = whole.GetByTimeStep(100)
-f1 = first.GetByTimeStep(100)
-s1 = second.GetByTimeStep(100)
+w1 = whole1.GetByTimeStep(100)
+f1 = first1.GetByTimeStep(100)
+s1 = second1.GetByTimeStep(100)
 
 assert np.all(w1 == f1) and np.all(w1 == s1)
 
 print("First checkpoint matches")
 
-w2 = whole.GetByTimeStep(200)
-s2 = second.GetByTimeStep(200)
+w2 = whole2.GetByTimeStep(200)
+s2 = second2.GetByTimeStep(200)
 
 assert np.all(w2 == s2)
 print("Second checkpoint matches")

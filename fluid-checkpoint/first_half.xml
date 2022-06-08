@@ -47,7 +47,7 @@
     </range>
   </visualisation>
   <properties>
-    <checkpoint file="checkpoint.xtr" period="100" />
+    <checkpoint file="checkpoint%d.xtr" period="100" />
   </properties>
   <initialconditions>
     <pressure>

@@ -47,9 +47,9 @@
     </range>
   </visualisation>
   <properties>
-    <checkpoint file="checkpoint.xtr" period="100" />
+    <checkpoint file="checkpoint%d.xtr" period="100" />
   </properties>
   <initialconditions>
-    <checkpoint file="checkpoint.xtr" />
+    <checkpoint file="checkpoint100.xtr" offsets="checkpoint.off" />
   </initialconditions>
 </hemelbsettings>
