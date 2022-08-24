@@ -17,7 +17,7 @@ HEMELB_STEERING_LIB=${HEMELB_STEERING_LIB:-${GOLD_STEERING}}
 rm -rf results
 
 # Run the test (hemelb needs to be in your PATH)
-$MPIRUN $MPIRUN_FLAGS $MPIRUN_NUMPROCS_FLAG $NUMPROCS hemelb -in config.xml -i 1 -ss 1111
+$MPIRUN $MPIRUN_FLAGS $MPIRUN_NUMPROCS_FLAG $NUMPROCS hemelb -in config.xml
 
 OFFSET_CHECK=${OFFSET_CHECK:-full}
 if [[ ${OFFSET_CHECK} == light ]]; then
