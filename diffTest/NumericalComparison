@@ -155,17 +155,11 @@ def CompareOffsetFiles(file1, file2, light_checks):
     if full_check:
         assert off1.NumberOfRanks == off2.NumberOfRanks
 
-    # Since "golden" data is in a snapshot v4 and we're now in v5,
-    # which has a different header size, the offsets will be shifted
-    # by a constant.
-    rel_off1 = off1.Data - off1.Data[0]
-    rel_off2 = off2.Data - off2.Data[0]
-
     # The last one always has to be the same
-    assert rel_off1[-1] == rel_off2[-1]
+    assert off1.Data[-1] == off2.Data[-1]
 
     if full_check:
-        assert np.all(rel_off1 == rel_off2)
+        assert np.all(off1.Data == off2.Data)
 
 
 if __name__ == "__main__":

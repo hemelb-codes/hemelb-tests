@@ -2,16 +2,12 @@
 
 set -ex
 
-GOLD_NUMPROCS=3
-GOLD_STEERING=basic
+GOLD_NUMPROCS=2
 
 MPIRUN=${MPIRUN:-mpirun}
 MPIRUN_FLAGS=${MPIRUN_FLAGS:-}
 MPIRUN_NUMPROCS_FLAG=${MPIRUN_NUMPROCS_FLAG:--np}
 NUMPROCS=${NUMPROCS:-${GOLD_NUMPROCS}}
-
-# Which steering library was compiled into the test executable?
-HEMELB_STEERING_LIB=${HEMELB_STEERING_LIB:-${GOLD_STEERING}}
 
 # Remove any results folder so that we have somewhere for the test output to go
 rm -rf results
