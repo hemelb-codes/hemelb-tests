@@ -1,11 +1,12 @@
 <?xml version='1.0' encoding='US-ASCII'?>
-<hemelbsettings version="5">
+<hemelbsettings version="6">
   <simulation>
     <step_length units="s" value="0.0008571428571428571" />
     <steps units="lattice" value="100" />
     <stresstype value="1" />
     <voxel_size units="m" value="0.0004" />
     <origin units="m" value="(-0.0032,-0.0032,-0.0502)" />
+    <checkpoint period="100" />
   </simulation>
   <geometry>
     <datafile path="config.gmy" />
@@ -46,9 +47,6 @@
       <maxstress units="Pa" value="0.1" />
     </range>
   </visualisation>
-  <properties>
-    <checkpoint file="checkpoint%d.xtr" period="100" />
-  </properties>
   <initialconditions>
     <pressure>
       <uniform units="mmHg" value="0.0" />

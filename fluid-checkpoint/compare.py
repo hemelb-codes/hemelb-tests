@@ -7,7 +7,7 @@ from hlb.parsers.extraction import ExtractedProperty
 test_dir = Path("")
 
 def get_cp(run_name, time):
-    xp = ExtractedProperty(test_dir / run_name / f"Extracted/checkpoint{time}.xtr")
+    xp = ExtractedProperty(test_dir / run_name / f"Checkpoints/{time}/distributions.xtr")
     assert len(xp.times) == 1
     assert xp.times[0] == time
     return xp
