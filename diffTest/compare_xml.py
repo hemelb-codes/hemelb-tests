@@ -8,6 +8,8 @@ def strip_extra(top):
     assert top.tag == "hemelbsettings"
     top.remove(top.find("monitoring"))
     top.remove(top.find("properties"))
+    ic = top.find("initialconditions")
+    ic.remove(ic.find("time"))
     return top
 
 
@@ -23,6 +25,7 @@ if __name__ == "__main__":
         "hemelbsettings/simulation/voxel_size": ScalarQuantityCheck(),
         "hemelbsettings/simulation/origin": VectorQuantityCheck(),
         "hemelbsettings/simulation/step_length": ScalarQuantityCheck(),
+        "hemelbsettings/initialconditions/pressure/uniform": ScalarQuantityCheck(),
         "hemelbsettings/*/*/position": VectorQuantityCheck(),
         "hemelbsettings/*/*/normal": VectorQuantityCheck(),
         "hemelbsettings/*/*/condition/mean": ScalarQuantityCheck(),
@@ -32,4 +35,5 @@ if __name__ == "__main__":
         "hemelbsettings/*/*/condition/period": ScalarQuantityCheck(1.0),
     }
     checker.attr_checks = special
+
     checker.check_path(args.test)
